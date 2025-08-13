@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>John Cena: Interactive Career Explorer</title>
+    <style>
+        /* Modern CSS Reset */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* CSS Variables for theming */
+        :root {
+            --primary-50: #f8fafc;
+            --primary-100: #f1f5f9;
+            --primary-200: #e2e8f0;
+            --primary-300: #cbd5e1;
+            --primary-400: #94a3b8;
+            --primary-500: #64748b;
+            --primary-600: #475569;
+            --primary-700: #334155;
+            --primary-800: #1e293b;
+            --primary-900: #0f172a;
+            
+            --accent-50: #fffbeb;
+            --accent-100: #fef3c7;
+            --accent-200: #fde68a;
+            --accent-300: #fcd34d;
+            --accent-400: #fbbf24;
+            --accent-500: #f59e0b;
+            --accent-600: #d97706;
+            --accent-700: #b45309;
+            --accent-800: #92400e;
+            --accent-900: #78350f;
+            
+            --success-500: #22c55e;
+            --warning-500: #eab308;
+            --error-500: #ef4444;
+            
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            
+            --gradient-primary: linear-gradient(135deg, var(--accent-500) 0%, var(--accent-600) 100%);
+            --gradient-bg: linear-gradient(135deg, var(--primary-50) 0%, var(--accent-50) 100%);
+        }
+
+        /* Base styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-800);
+            background: var(--gradient-bg);
+            min-height: 100vh;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(135deg, var(--primary-900) 0%, var(--accent-600) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-900);
+            margin-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--primary-800);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            color: var(--primary-600);
+            margin-bottom: 1rem;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                padding: 2rem;
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--primary-600);
+            margin-top: 0.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-padding {
+            padding: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .card-padding {
+                padding: 2rem;
+            }
+        }
+
+        /* Grid layouts */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+
+        @media (min-width: 768px) {
+            .grid-cols-md-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+            
+            .grid-cols-md-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid-cols-lg-3 {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .col-span-2 {
+            grid-column: span 2 / span 2;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--primary-700);
+            margin-bottom: 0.25rem;
+        }
+
+        .form-select, .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--primary-200);
+            border-radius: 0.5rem;
+            background-color: white;
+            color: var(--primary-800);
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            border-color: var(--accent-500);
+            box-shadow: 0 0 0 3px rgb(245 158 11 / 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--primary-100);
+            color: var(--primary-800);
+            border: 2px solid var(--primary-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-200);
+        }
+
+        /* Match list styles */
+        .match-list {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .match-item {
+            background: var(--primary-50);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid var(--accent-500);
+            transition: all 0.2s ease;
+        }
+
+        .match-item:hover {
+            background: white;
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .match-date {
+            font-size: 0.875rem;
+            color: var(--primary-500);
+            font-weight: 500;
+        }
+
+        .match-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .match-type-ppv {
+            background: var(--accent-100);
+            color: var(--accent-800);
+        }
+
+        .match-type-raw {
+            background: var(--error-500);
+            color: white;
+        }
+
+        .match-type-smackdown {
+            background: var(--primary-600);
+            color: white;
+        }
+
+        .match-event {
+            font-weight: 600;
+            color: var(--primary-800);
+            margin-bottom: 0.25rem;
+        }
+
+        .match-opponent {
+            color: var(--primary-600);
+            font-size: 0.875rem;
+        }
+
+        /* Statistics styles */
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            background: white;
+            border: 2px solid var(--primary-100);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent-600);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--primary-500);
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Chart container */
+        .chart-container {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            min-height: 300px;
+        }
+
+        .chart-bar {
+            background: var(--accent-500);
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 20px;
+        }
+
+        .chart-bar:hover {
+            background: var(--accent-600);
+            transform: scaleX(1.02);
+        }
+
+        .chart-label {
+            font-size: 0.75rem;
+            color: var(--primary-600);
+            margin-bottom: 0.25rem;
+        }
+
+        .chart-value {
+            font-size: 0.75rem;
+            color: white;
+            font-weight: 600;
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--primary-100);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-300);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-400);
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary-200);
+            border-radius: 50%;
+            border-top-color: var(--accent-500);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .match-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .match-type {
+                margin-top: 0.5rem;
+            }
+        }
+
+        .no-matches {
+            text-align: center;
+            color: var(--primary-500);
+            padding: 2rem 0;
+            font-style: italic;
+        }
+
+        .video-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--primary-200);
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--primary-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .video-link:hover {
+            color: var(--accent-600);
+        }
+
+        .video-link svg {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>John Cena: Interactive Career Explorer</h1>
+            <p class="subtitle">Explore over two decades of televised matches from 2003 to present.</p>
+        </header>
+
+        <main>
+            <!-- Filter Controls -->
+            <div class="card card-padding" style="margin-bottom: 2rem;">
+                <div class="grid grid-cols-1 grid-cols-md-3">
+                    <div class="form-group">
+                        <label for="year-filter" class="form-label">Filter by Year</label>
+                        <select id="year-filter" class="form-select">
+                            <option value="all">All Years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="type-filter" class="form-label">Filter by Event Type</label>
+                        <select id="type-filter" class="form-select">
+                            <option value="all">All Types</option>
+                            <option value="PPV">PPV / PLE</option>
+                            <option value="Raw">Raw</option>
+                            <option value="SmackDown">SmackDown</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: end;">
+                        <button id="reset-filters" class="btn btn-primary" style="width: 100%;">Reset Filters</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 grid-cols-lg-3">
+                <!-- Main Content - Match List -->
+                <div class="col-span-2">
+                    <div class="card card-padding">
+                        <h2>Match Checklist</h2>
+                        <p>A detailed list of matches based on your filters. Found <strong id="match-count" style="color: var(--accent-600);">0</strong> matches.</p>
+                        <div id="checklist-container" class="match-list"></div>
+                    </div>
+                </div>
+
+                <!-- Sidebar - Statistics and Charts -->
+                <div class="grid grid-cols-1" style="gap: 1.5rem;">
+                    <!-- Statistics Overview -->
+                    <div class="card card-padding">
+                        <h3>Quick Stats</h3>
+                        <div class="grid grid-cols-1" style="gap: 1rem;">
+                            <div class="stat-card">
+                                <div class="stat-number" id="total-matches">0</div>
+                                <div class="stat-label">Total Matches</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="ppv-count">0</div>
+                                <div class="stat-label">PPV Matches</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="years-active">0</div>
+                                <div class="stat-label">Years Active</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Match Type Breakdown -->
+                    <div class="card card-padding">
+                        <h3>Match Type Breakdown</h3>
+                        <p style="font-size: 0.875rem; color: var(--primary-500);">Proportion of matches on PPV, Raw, and SmackDown for the selected year.</p>
+                        <div class="chart-container" id="type-chart"></div>
+                    </div>
+
+                    <!-- Matches Per Year -->
+                    <div class="card card-padding">
+                        <h3>Matches Per Year</h3>
+                        <p style="font-size: 0.875rem; color: var(--primary-500);">Total matches each year for the selected event type.</p>
+                        <div class="chart-container" id="year-chart"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const allMatches = [
+            { year: 2003, type: "SmackDown", date: "2003-01-02", event: "SmackDown", opponent: "Rikishi" },
+            { year: 2003, type: "SmackDown", date: "2003-01-16", event: "SmackDown", opponent: "Eddie Guerrero" },
+            { year: 2003, type: "PPV", date: "2003-01-19", event: "Royal Rumble", opponent: "Participated in Royal Rumble Match" },
+            { year: 2003, type: "SmackDown", date: "2003-01-30", event: "SmackDown", opponent: "Billy Gunn" },
+            { year: 2003, type: "SmackDown", date: "2003-02-06", event: "SmackDown", opponent: "Kurt Angle" },
+            { year: 2003, type: "SmackDown", date: "2003-02-13", event: "SmackDown", opponent: "Brian Kendrick" },
+            { year: 2003, type: "SmackDown", date: "2003-04-10", event: "SmackDown", opponent: "The Undertaker" },
+            { year: 2003, type: "SmackDown", date: "2003-04-17", event: "SmackDown", opponent: "Rhyno" },
+            { year: 2003, type: "PPV", date: "2003-04-27", event: "Backlash", opponent: "Brock Lesnar" },
+            { year: 2003, type: "SmackDown", date: "2003-05-01", event: "SmackDown", opponent: "Chris Benoit" },
+            { year: 2003, type: "SmackDown", date: "2003-05-15", event: "SmackDown", opponent: "Teamed with The FBI vs. Chris Benoit, Rhyno & Spanky" },
+            { year: 2003, type: "PPV", date: "2003-05-18", event: "Judgment Day", opponent: "Teamed with The FBI vs. Chris Benoit, Rhyno & Spanky" },
+            { year: 2003, type: "SmackDown", date: "2003-05-22", event: "SmackDown", opponent: "Spanky" },
+            { year: 2003, type: "SmackDown", date: "2003-06-05", event: "SmackDown", opponent: "Chris Benoit" },
+            { year: 2003, type: "SmackDown", date: "2003-06-12", event: "SmackDown", opponent: "Funaki" },
+            { year: 2003, type: "SmackDown", date: "2003-06-19", event: "SmackDown", opponent: "The Undertaker" },
+            { year: 2003, type: "SmackDown", date: "2003-07-03", event: "SmackDown", opponent: "Orlando Jordan" },
+            { year: 2003, type: "SmackDown", date: "2003-07-10", event: "SmackDown", opponent: "Billy Gunn" },
+            { year: 2003, type: "SmackDown", date: "2003-07-24", event: "SmackDown", opponent: "Eddie Guerrero" },
+            { year: 2003, type: "PPV", date: "2003-07-27", event: "Vengeance", opponent: "The Undertaker" },
+            { year: 2003, type: "SmackDown", date: "2003-08-07", event: "SmackDown", opponent: "Zach Gowen" },
+            { year: 2003, type: "SmackDown", date: "2003-08-21", event: "SmackDown", opponent: "Eddie Guerrero" },
+            { year: 2003, type: "SmackDown", date: "2003-09-04", event: "SmackDown", opponent: "Kurt Angle" },
+            { year: 2003, type: "SmackDown", date: "2003-09-18", event: "SmackDown", opponent: "Eddie Guerrero" },
+            { year: 2003, type: "SmackDown", date: "2003-10-02", event: "SmackDown", opponent: "The Undertaker" },
+            { year: 2003, type: "PPV", date: "2003-10-19", event: "No Mercy", opponent: "Kurt Angle" },
+            { year: 2003, type: "SmackDown", date: "2003-10-23", event: "SmackDown", opponent: "Teamed with A-Train vs. Chris Benoit & Kurt Angle" },
+            { year: 2003, type: "SmackDown", date: "2003-11-13", event: "SmackDown", opponent: "Teamed with Brock Lesnar vs. Kurt Angle" },
+            { year: 2003, type: "PPV", date: "2003-11-16", event: "Survivor Series", opponent: "Team Angle vs. Team Lesnar" },
+            { year: 2004, type: "SmackDown", date: "2004-01-22", event: "SmackDown", opponent: "Teamed with Chris Benoit vs. The FBI & Nunzio" },
+            { year: 2004, type: "PPV", date: "2004-01-25", event: "Royal Rumble", opponent: "Participated in Royal Rumble Match" },
+            { year: 2004, type: "SmackDown", date: "2004-01-29", event: "SmackDown", opponent: "The Full Blooded Italians" },
+            { year: 2004, type: "SmackDown", date: "2004-02-12", event: "SmackDown", opponent: "Booker T & The Basham Brothers" },
+            { year: 2004, type: "PPV", date: "2004-02-15", event: "No Way Out", opponent: "Kurt Angle & Big Show" },
+            { year: 2004, type: "SmackDown", date: "2004-03-04", event: "SmackDown", opponent: "A-Train" },
+            { year: 2004, type: "SmackDown", date: "2004-03-11", event: "SmackDown", opponent: "Rhyno" },
+            { year: 2004, type: "PPV", date: "2004-03-14", event: "WrestleMania XX", opponent: "Big Show" },
+            { year: 2004, type: "SmackDown", date: "2004-03-18", event: "SmackDown", opponent: "Rhyno" },
+            { year: 2004, type: "SmackDown", date: "2004-03-25", event: "SmackDown", opponent: "Booker T" },
+            { year: 2004, type: "SmackDown", date: "2004-05-06", event: "SmackDown", opponent: "Rene Dupree" },
+            { year: 2004, type: "PPV", date: "2004-05-16", event: "Judgment Day", opponent: "René Duprée" },
+            { year: 2004, type: "SmackDown", date: "2004-05-20", event: "SmackDown", opponent: "Rene Dupree" },
+            { year: 2004, type: "SmackDown", date: "2004-05-27", event: "SmackDown", opponent: "Rene Dupree" },
+            { year: 2004, type: "SmackDown", date: "2004-06-03", event: "SmackDown", opponent: "Rene Dupree" },
+            { year: 2004, type: "SmackDown", date: "2004-06-17", event: "SmackDown", opponent: "Booker T" },
+            { year: 2004, type: "SmackDown", date: "2004-06-24", event: "SmackDown", opponent: "Rob Van Dam" },
+            { year: 2004, type: "PPV", date: "2004-06-27", event: "The Great American Bash", opponent: "Booker T, René Duprée & Rob Van Dam" },
+            { year: 2004, type: "SmackDown", date: "2004-07-29", event: "SmackDown", opponent: "Booker T" },
+            { year: 2004, type: "PPV", date: "2004-08-15", event: "SummerSlam", opponent: "Booker T" },
+            { year: 2004, type: "SmackDown", date: "2004-08-26", event: "SmackDown", opponent: "Booker T" },
+            { year: 2004, type: "SmackDown", date: "2004-09-02", event: "SmackDown", opponent: "Booker T" },
+            { year: 2004, type: "SmackDown", date: "2004-09-16", event: "SmackDown", opponent: "Booker T" },
+            { year: 2004, type: "PPV", date: "2004-10-03", event: "No Mercy", opponent: "Booker T" },
+            { year: 2004, type: "SmackDown", date: "2004-10-07", event: "SmackDown", opponent: "Carlito Caribbean Cool" },
+            { year: 2004, type: "PPV", date: "2004-11-14", event: "Survivor Series", opponent: "Team Guerrero vs. Team Angle" },
+            { year: 2004, type: "SmackDown", date: "2004-11-18", event: "SmackDown", opponent: "Carlito" },
+            { year: 2004, type: "PPV", date: "2004-12-12", event: "Armageddon", opponent: "Jesús (Street Fight)" },
+            { year: 2004, type: "SmackDown", date: "2004-12-16", event: "SmackDown", opponent: "Rene Dupree" },
+            { year: 2005, type: "SmackDown", date: "2005-01-20", event: "SmackDown", opponent: "Kenzo Suzuki" },
+            { year: 2005, type: "SmackDown", date: "2005-01-27", event: "SmackDown", opponent: "Teamed with Rey Mysterio vs. Kurt Angle & Mark Jindrak" },
+            { year: 2005, type: "PPV", date: "2005-01-30", event: "Royal Rumble", opponent: "Participated in Royal Rumble Match" },
+            { year: 2005, type: "SmackDown", date: "2005-02-10", event: "SmackDown", opponent: "Orlando Jordan" },
+            { year: 2005, type: "SmackDown", date: "2005-02-17", event: "SmackDown", opponent: "Booker T" },
+            { year: 2005, type: "PPV", date: "2005-02-20", event: "No Way Out", opponent: "Kurt Angle" },
+            { year: 2005, type: "SmackDown", date: "2005-03-03", event: "SmackDown", opponent: "Orlando Jordan" },
+            { year: 2005, type: "SmackDown", date: "2005-03-17", event: "SmackDown", opponent: "Carlito" },
+            { year: 2005, type: "SmackDown", date: "2005-03-24", event: "SmackDown", opponent: "Carlito" },
+            { year: 2005, type: "SmackDown", date: "2005-03-31", event: "SmackDown", opponent: "Carlito" },
+            { year: 2005, type: "PPV", date: "2005-04-03", event: "WrestleMania 21", opponent: "John 'Bradshaw' Layfield" },
+            { year: 2005, type: "SmackDown", date: "2005-04-14", event: "SmackDown", opponent: "Orlando Jordan" },
+            { year: 2005, type: "SmackDown", date: "2005-04-21", event: "SmackDown", opponent: "JBL" },
+            { year: 2005, type: "PPV", date: "2005-05-01", event: "Backlash", opponent: "Chris Jericho" },
+            { year: 2005, type: "SmackDown", date: "2005-05-19", event: "SmackDown", opponent: "The Basham Brothers" },
+            { year: 2005, type: "PPV", date: "2005-05-22", event: "Judgment Day", opponent: "John 'Bradshaw' Layfield" },
+            { year: 2005, type: "Raw", date: "2005-06-13", event: "Raw", opponent: "Muhammad Hassan" },
+            { year: 2005, type: "Raw", date: "2005-06-20", event: "Raw", opponent: "Muhammad Hassan & Daivari" },
+            { year: 2005, type: "PPV", date: "2005-06-26", event: "Vengeance", opponent: "Chris Jericho & Christian" },
+            { year: 2005, type: "Raw", date: "2005-06-27", event: "Raw", opponent: "Teamed with Shawn Michaels vs. Chris Jericho & Christian" },
+            { year: 2005, type: "Raw", date: "2005-07-04", event: "Raw", opponent: "Chris Jericho" },
+            { year: 2005, type: "Raw", date: "2005-07-18", event: "Raw", opponent: "Gene Snitsky" },
+            { year: 2005, type: "Raw", date: "2005-08-01", event: "Raw", opponent: "Chris Jericho & Carlito" },
+            { year: 2005, type: "Raw", date: "2005-08-08", event: "Raw", opponent: "Chris Jericho & Carlito" },
+            { year: 2005, type: "Raw", date: "2005-08-15", event: "Raw", opponent: "Chris Jericho" },
+            { year: 2005, type: "PPV", date: "2005-08-21", event: "SummerSlam", opponent: "Chris Jericho" },
+            { year: 2005, type: "Raw", date: "2005-08-22", event: "Raw", opponent: "Chris Jericho" },
+            { year: 2005, type: "Raw", date: "2005-08-29", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-09-05", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-09-12", event: "Raw", opponent: "Tyson Tomko" },
+            { year: 2005, type: "PPV", date: "2005-09-18", event: "Unforgiven", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-09-19", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-10-03", event: "Raw", opponent: "Eric Bischoff" },
+            { year: 2005, type: "Raw", date: "2005-10-17", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-10-24", event: "Raw", opponent: "Kurt Angle & Shawn Michaels" },
+            { year: 2005, type: "PPV", date: "2005-11-01", event: "Taboo Tuesday", opponent: "Kurt Angle & Shawn Michaels" },
+            { year: 2005, type: "Raw", date: "2005-11-07", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-11-21", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "PPV", date: "2005-11-27", event: "Survivor Series", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-11-28", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-12-05", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2005, type: "Raw", date: "2005-12-12", event: "Raw", opponent: "Daivari" },
+            { year: 2005, type: "Raw", date: "2005-12-26", event: "Raw", opponent: "Shelton Benjamin" },
+            { year: 2006, type: "Raw", date: "2006-01-02", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2006, type: "PPV", date: "2006-01-08", event: "New Year's Revolution", opponent: "Elimination Chamber Match; then vs. Edge" },
+            { year: 2006, type: "Raw", date: "2006-01-09", event: "Raw", opponent: "Kurt Angle" },
+            { year: 2006, type: "Raw", date: "2006-01-16", event: "Raw", opponent: "Teamed with Ric Flair vs. Edge & Chris Masters" },
+            { year: 2006, type: "Raw", date: "2006-01-23", event: "Raw", opponent: "Teamed with Ric Flair & Shawn Michaels vs. The Spirit Squad" },
+            { year: 2006, type: "PPV", date: "2006-01-29", event: "Royal Rumble", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-01-30", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-02-06", event: "Raw", opponent: "Chris Masters" },
+            { year: 2006, type: "Raw", date: "2006-02-13", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-02-20", event: "Raw", opponent: "Triple H" },
+            { year: 2006, type: "Raw", date: "2006-03-06", event: "Raw", opponent: "Teamed with Shawn Michaels vs. Triple H & Shane McMahon" },
+            { year: 2006, type: "Raw", date: "2006-03-20", event: "Raw", opponent: "Vince McMahon" },
+            { year: 2006, type: "Raw", date: "2006-03-27", event: "Raw", opponent: "Triple H" },
+            { year: 2006, type: "PPV", date: "2006-04-02", event: "WrestleMania 22", opponent: "Triple H" },
+            { year: 2006, type: "Raw", date: "2006-04-03", event: "Raw", opponent: "Teamed with Triple H vs. Edge" },
+            { year: 2006, type: "Raw", date: "2006-04-10", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-04-17", event: "Raw", opponent: "Triple H" },
+            { year: 2006, type: "Raw", date: "2006-04-24", event: "Raw", opponent: "Teamed with Shawn Michaels & Edge vs. The Spirit Squad" },
+            { year: 2006, type: "PPV", date: "2006-04-30", event: "Backlash", opponent: "Triple H & Edge" },
+            { year: 2006, type: "Raw", date: "2006-05-01", event: "Raw", opponent: "Teamed with Shawn Michaels vs. The Spirit Squad" },
+            { year: 2006, type: "Raw", date: "2006-05-08", event: "Raw", opponent: "Kenny" },
+            { year: 2006, type: "Raw", date: "2006-05-15", event: "Raw", opponent: "Teamed with Shawn Michaels vs. Triple H" },
+            { year: 2006, type: "Raw", date: "2006-05-22", event: "Raw", opponent: "Chris Masters" },
+            { year: 2006, type: "Raw", date: "2006-06-05", event: "Raw", opponent: "Rob Van Dam" },
+            { year: 2006, type: "PPV", date: "2006-06-11", event: "ECW One Night Stand", opponent: "Rob Van Dam" },
+            { year: 2006, type: "Raw", date: "2006-06-19", event: "Raw", opponent: "Balls Mahoney" },
+            { year: 2006, type: "Raw", date: "2006-07-03", event: "Raw", opponent: "Rob Van Dam" },
+            { year: 2006, type: "Raw", date: "2006-07-10", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-07-17", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-07-31", event: "Raw", opponent: "Umaga" },
+            { year: 2006, type: "Raw", date: "2006-08-07", event: "Raw", opponent: "Teamed with Hulk Hogan vs. Randy Orton & Edge" },
+            { year: 2006, type: "Raw", date: "2006-08-14", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "PPV", date: "2006-08-20", event: "SummerSlam", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-08-21", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-09-04", event: "Raw", opponent: "Chris Masters" },
+            { year: 2006, type: "Raw", date: "2006-09-11", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "PPV", date: "2006-09-17", event: "Unforgiven", opponent: "Edge (TLC Match)" },
+            { year: 2006, type: "Raw", date: "2006-10-02", event: "Raw", opponent: "The Undertaker & Kane" },
+            { year: 2006, type: "Raw", date: "2006-10-09", event: "Raw", opponent: "William Regal & King Booker" },
+            { year: 2006, type: "Raw", date: "2006-10-16", event: "Raw", opponent: "Teamed with DX vs. Edge, Randy Orton & Chris Masters" },
+            { year: 2006, type: "Raw", date: "2006-10-23", event: "Raw", opponent: "Big Show" },
+            { year: 2006, type: "Raw", date: "2006-10-30", event: "Raw", opponent: "Johnny Nitro" },
+            { year: 2006, type: "PPV", date: "2006-11-05", event: "Cyber Sunday", opponent: "King Booker & Big Show" },
+            { year: 2006, type: "Raw", date: "2006-11-06", event: "Raw", opponent: "Teamed with D-Generation X vs. Rated-RKO & Kenny" },
+            { year: 2006, type: "Raw", date: "2006-11-13", event: "Raw", opponent: "Umaga" },
+            { year: 2006, type: "Raw", date: "2006-11-20", event: "Raw", opponent: "Big Show" },
+            { year: 2006, type: "PPV", date: "2006-11-26", event: "Survivor Series", opponent: "Team Cena vs. Team Big Show" },
+            { year: 2006, type: "Raw", date: "2006-11-27", event: "Raw", opponent: "Johnny Nitro" },
+            { year: 2006, type: "PPV", date: "2006-12-03", event: "December to Dismember", opponent: "Teamed with Batista vs. King Booker & Finlay" },
+            { year: 2006, type: "Raw", date: "2006-12-11", event: "Raw", opponent: "Armando Alejandro Estrada" },
+            { year: 2006, type: "Raw", date: "2006-12-18", event: "Raw", opponent: "Edge" },
+            { year: 2006, type: "Raw", date: "2006-12-25", event: "Raw", opponent: "Umaga" },
+            { year: 2007, type: "Raw", date: "2007-01-01", event: "Raw", opponent: "Kevin Federline" },
+            { year: 2007, type: "PPV", date: "2007-01-07", event: "New Year's Revolution", opponent: "Umaga" },
+            { year: 2007, type: "Raw", date: "2007-01-08", event: "Raw", opponent: "The Great Khali" },
+            { year: 2007, type: "Raw", date: "2007-01-22", event: "Raw", opponent: "Edge" },
+            { year: 2007, type: "PPV", date: "2007-01-28", event: "Royal Rumble", opponent: "Umaga (Last Man Standing Match)" },
+            { year: 2007, type: "Raw", date: "2007-01-29", event: "Raw", opponent: "Edge" },
+            { year: 2007, type: "Raw", date: "2007-02-05", event: "Raw", opponent: "Teamed with Shawn Michaels vs. Rated-RKO" },
+            { year: 2007, type: "Raw", date: "2007-02-12", event: "Raw", opponent: "Randy Orton" },
+            { year: 2007, type: "PPV", date: "2007-02-18", event: "No Way Out", opponent: "Teamed with Shawn Michaels vs. Batista & The Undertaker" },
+            { year: 2007, type: "Raw", date: "2007-02-19", event: "Raw", opponent: "Randy Orton" },
+            { year: 2007, type: "Raw", date: "2007-03-05", event: "Raw", opponent: "Shawn Michaels" },
+            { year: 2007, type: "Raw", date: "2007-03-12", event: "Raw", opponent: "Chris Masters" },
+            { year: 2007, type: "Raw", date: "2007-03-26", event: "Raw", opponent: "Booker T & Sharmell" },
+            { year: 2007, type: "PPV", date: "2007-04-01", event: "WrestleMania 23", opponent: "Shawn Michaels" },
+            { year: 2007, type: "Raw", date: "2007-04-02", event: "Raw", opponent: "Teamed with Shawn Michaels vs. Randy Orton & Edge" },
+            { year: 2007, type: "Raw", date: "2007-04-23", event: "Raw", opponent: "Shawn Michaels" },
+            { year: 2007, type: "PPV", date: "2007-04-29", event: "Backlash", opponent: "Shawn Michaels, Edge & Randy Orton" },
+            { year: 2007, type: "Raw", date: "2007-04-30", event: "Raw", opponent: "Shawn Michaels" },
+            { year: 2007, type: "Raw", date: "2007-05-07", event: "Raw", opponent: "Randy Orton" },
+            { year: 2007, type: "Raw", date: "2007-05-14", event: "Raw", opponent: "Edge" },
+            { year: 2007, type: "Raw", date: "2007-05-21", event: "Raw", opponent: "The Great Khali" },
+            { year: 2007, type: "PPV", date: "2007-05-20", event: "Judgment Day", opponent: "The Great Khali" },
+            { year: 2007, type: "PPV", date: "2007-06-03", event: "One Night Stand", opponent: "The Great Khali" },
+            { year: 2007, type: "Raw", date: "2007-06-04", event: "Raw", opponent: "The Great Khali & Umaga" },
+            { year: 2007, type: "PPV", date: "2007-06-24", event: "Vengeance: Night of Champions", opponent: "Mick Foley, Bobby Lashley, Randy Orton & King Booker" },
+            { year: 2007, type: "Raw", date: "2007-07-22", event: "Raw", opponent: "Bobby Lashley" },
+            { year: 2007, type: "PPV", date: "2007-07-22", event: "The Great American Bash", opponent: "Bobby Lashley" },
+            { year: 2007, type: "PPV", date: "2007-08-26", event: "SummerSlam", opponent: "Randy Orton" },
+            { year: 2007, type: "PPV", date: "2007-09-16", event: "Unforgiven", opponent: "Randy Orton" },
+            { year: 2007, type: "Raw", date: "2007-10-01", event: "Raw", opponent: "Mr. Kennedy (Suffered pectoral tear)" },
+            { year: 2008, type: "PPV", date: "2008-01-27", event: "Royal Rumble", opponent: "Returned in the Royal Rumble Match" },
+            { year: 2008, type: "Raw", date: "2008-02-04", event: "Raw", opponent: "Mark Henry" },
+            { year: 2008, type: "Raw", date: "2008-02-11", event: "Raw", opponent: "Randy Orton" },
+            { year: 2008, type: "PPV", date: "2008-02-17", event: "No Way Out", opponent: "Randy Orton" },
+            { year: 2008, type: "Raw", date: "2008-02-18", event: "Raw", opponent: "Randy Orton" },
+            { year: 2008, type: "PPV", date: "2008-03-28", event: "WrestleMania XXIV", opponent: "Randy Orton & Triple H" },
+            { year: 2008, type: "PPV", date: "2008-04-27", event: "Backlash", opponent: "Randy Orton, Triple H & JBL" },
+            { year: 2008, type: "PPV", date: "2008-05-18", event: "Judgment Day", opponent: "JBL" },
+            { year: 2008, type: "PPV", date: "2008-06-01", event: "One Night Stand", opponent: "JBL (First Blood Match)" },
+            { year: 2008, type: "PPV", date: "2008-06-29", event: "Night of Champions", opponent: "Triple H" },
+            { year: 2008, type: "PPV", date: "2008-07-20", event: "The Great American Bash", opponent: "JBL (NYC Parking Lot Brawl)" },
+            { year: 2008, type: "PPV", date: "2008-08-17", event: "SummerSlam", opponent: "Batista (Suffered neck injury)" },
+            { year: 2008, type: "PPV", date: "2008-11-23", event: "Survivor Series", opponent: "Chris Jericho" },
+            { year: 2008, type: "PPV", date: "2008-12-14", event: "Armageddon", opponent: "Chris Jericho" },
+            { year: 2008, type: "Raw", date: "2008-12-29", event: "Raw", opponent: "Teamed with Trish Stratus vs. Santino Marella & Beth Phoenix" },
+            { year: 2009, type: "PPV", date: "2009-01-25", event: "Royal Rumble", opponent: "JBL" },
+            { year: 2009, type: "PPV", date: "2009-02-15", event: "No Way Out", opponent: "Elimination Chamber Match" },
+            { year: 2009, type: "PPV", date: "2009-04-05", event: "WrestleMania 25", opponent: "Edge & The Big Show" },
+            { year: 2009, type: "PPV", date: "2009-04-26", event: "Backlash", opponent: "Edge (Last Man Standing Match)" },
+            { year: 2009, type: "PPV", date: "2009-05-17", event: "Judgment Day", opponent: "The Big Show" },
+            { year: 2009, type: "PPV", date: "2009-06-07", event: "Extreme Rules", opponent: "The Big Show (Submission Match)" },
+            { year: 2009, type: "PPV", date: "2009-06-28", event: "The Bash", opponent: "The Miz" },
+            { year: 2009, type: "PPV", date: "2009-07-26", event: "Night of Champions", opponent: "Triple H & Randy Orton" },
+            { year: 2009, type: "PPV", date: "2009-08-23", event: "SummerSlam", opponent: "Randy Orton" },
+            { year: 2009, type: "PPV", date: "2009-09-13", event: "Breaking Point", opponent: "Randy Orton ('I Quit' Match)" },
+            { year: 2009, type: "PPV", date: "2009-10-04", event: "Hell in a Cell", opponent: "Randy Orton (Hell in a Cell Match)" },
+            { year: 2009, type: "PPV", date: "2009-10-25", event: "Bragging Rights", opponent: "Randy Orton (Iron Man Match)" },
+            { year: 2009, type: "PPV", date: "2009-11-22", event: "Survivor Series", opponent: "Triple H & Shawn Michaels" },
+            { year: 2009, type: "PPV", date: "2009-12-13", event: "TLC: Tables, Ladders & Chairs", opponent: "Sheamus (Tables Match)" },
+            { year: 2010, type: "PPV", date: "2010-01-31", event: "Royal Rumble", opponent: "Participated in the Royal Rumble Match" },
+            { year: 2010, type: "PPV", date: "2010-02-21", event: "Elimination Chamber", opponent: "Elimination Chamber Match; then vs. Batista" },
+            { year: 2010, type: "PPV", date: "2010-03-26", event: "WrestleMania XXVI", opponent: "Batista" },
+            { year: 2010, type: "PPV", date: "2010-04-25", event: "Extreme Rules", opponent: "Batista (Last Man Standing Match)" },
+            { year: 2010, type: "PPV", date: "2010-05-23", event: "Over the Limit", opponent: "Batista ('I Quit' Match)" },
+            { year: 2010, type: "PPV", date: "2010-06-20", event: "Fatal 4-Way", opponent: "Sheamus, Randy Orton & Edge" },
+            { year: 2010, type: "PPV", date: "2010-07-18", event: "Money in the Bank", opponent: "Sheamus (Steel Cage Match)" },
+            { year: 2010, type: "PPV", date: "2010-08-15", event: "SummerSlam", opponent: "Team WWE vs. The Nexus" },
+            { year: 2010, type: "PPV", date: "2010-10-03", event: "Hell in a Cell", opponent: "Wade Barrett" },
+            { year: 2010, type: "PPV", date: "2010-10-24", event: "Bragging Rights", opponent: "Wade Barrett" },
+            { year: 2010, type: "PPV", date: "2010-11-21", event: "Survivor Series", opponent: "Randy Orton (as Special Guest Referee)" },
+            { year: 2010, type: "PPV", date: "2010-12-19", event: "TLC: Tables, Ladders & Chairs", opponent: "Wade Barrett (Chairs Match)" },
+            { year: 2011, type: "PPV", date: "2011-01-30", event: "Royal Rumble", opponent: "Participated in the 40-Man Royal Rumble Match" },
+            { year: 2011, type: "PPV", date: "2011-02-20", event: "Elimination Chamber", opponent: "Raw Elimination Chamber Match" },
+            { year: 2011, type: "PPV", date: "2011-04-03", event: "WrestleMania XXVII", opponent: "The Miz" },
+            { year: 2011, type: "PPV", date: "2011-05-01", event: "Extreme Rules", opponent: "The Miz & John Morrison (Steel Cage Match)" },
+            { year: 2011, type: "PPV", date: "2011-05-22", event: "Over the Limit", opponent: "The Miz ('I Quit' Match)" },
+            { year: 2011, type: "PPV", date: "2011-06-19", event: "Capitol Punishment", opponent: "R-Truth" },
+            { year: 2011, type: "PPV", date: "2011-07-17", event: "Money in the Bank", opponent: "CM Punk" },
+            { year: 2011, type: "PPV", date: "2011-08-14", event: "SummerSlam", opponent: "CM Punk" },
+            { year: 2011, type: "PPV", date: "2011-09-18", event: "Night of Champions", opponent: "Alberto Del Rio" },
+            { year: 2011, type: "PPV", date: "2011-10-02", event: "Hell in a Cell", opponent: "CM Punk & Alberto Del Rio (Hell in a Cell Match)" },
+            { year: 2011, type: "PPV", date: "2011-10-23", event: "Vengeance", opponent: "Alberto Del Rio (Last Man Standing Match)" },
+            { year: 2011, type: "PPV", date: "2011-11-20", event: "Survivor Series", opponent: "Teamed with The Rock vs. The Miz & R-Truth" },
+            { year: 2012, type: "PPV", date: "2012-01-29", event: "Royal Rumble", opponent: "Kane" },
+            { year: 2012, type: "PPV", date: "2012-02-19", event: "Elimination Chamber", opponent: "Kane (Ambulance Match)" },
+            { year: 2012, type: "PPV", date: "2012-04-01", event: "WrestleMania XXVIII", opponent: "The Rock" },
+            { year: 2012, type: "PPV", date: "2012-04-29", event: "Extreme Rules", opponent: "Brock Lesnar (Extreme Rules Match)" },
+            { year: 2012, type: "PPV", date: "2012-05-20", event: "Over the Limit", opponent: "John Laurinaitis" },
+            { year: 2012, type: "PPV", date: "2012-06-17", event: "No Way Out", opponent: "The Big Show (Steel Cage Match)" },
+            { year: 2012, type: "PPV", date: "2012-07-15", event: "Money in the Bank", opponent: "Money in the Bank Ladder Match" },
+            { year: 2012, type: "Raw", date: "2012-07-23", event: "Raw", opponent: "Cashed in Money in the Bank vs. CM Punk" },
+            { year: 2012, type: "PPV", date: "2012-08-19", event: "SummerSlam", opponent: "CM Punk & The Big Show" },
+            { year: 2012, type: "PPV", date: "2012-09-16", event: "Night of Champions", opponent: "CM Punk" },
+            { year: 2012, type: "PPV", date: "2012-11-18", event: "Survivor Series", opponent: "CM Punk & Ryback" },
+            { year: 2012, type: "PPV", date: "2012-12-13", event: "TLC: Tables, Ladders & Chairs", opponent: "Dolph Ziggler (Ladder Match)" },
+            { year: 2013, type: "PPV", date: "2013-01-27", event: "Royal Rumble", opponent: "Participated in the Royal Rumble Match" },
+            { year: 2013, type: "PPV", date: "2013-02-17", event: "Elimination Chamber", opponent: "Teamed with Ryback & Sheamus vs. The Shield" },
+            { year: 2013, type: "Raw", date: "2013-02-25", event: "Raw", opponent: "CM Punk" },
+            { year: 2013, type: "PPV", date: "2013-04-07", event: "WrestleMania 29", opponent: "The Rock" },
+            { year: 2013, type: "PPV", date: "2013-05-19", event: "Extreme Rules", opponent: "Ryback (Last Man Standing Match)" },
+            { year: 2013, type: "PPV", date: "2013-06-16", event: "Payback", opponent: "Ryback (Three Stages of Hell Match)" },
+            { year: 2013, type: "PPV", date: "2013-07-14", event: "Money in the Bank", opponent: "Mark Henry" },
+            { year: 2013, type: "PPV", date: "2013-08-18", event: "SummerSlam", opponent: "Daniel Bryan (Sidelined with injury)" },
+            { year: 2013, type: "PPV", date: "2013-10-27", event: "Hell in a Cell", opponent: "Alberto Del Rio" },
+            { year: 2013, type: "PPV", date: "2013-11-24", event: "Survivor Series", opponent: "Alberto Del Rio" },
+            { year: 2013, type: "PPV", date: "2013-12-13", event: "TLC: Tables, Ladders & Chairs", opponent: "Randy Orton (TLC Match)" },
+            { year: 2014, type: "PPV", date: "2014-01-26", event: "Royal Rumble", opponent: "Randy Orton" },
+            { year: 2014, type: "PPV", date: "2014-02-23", event: "Elimination Chamber", opponent: "Competed in Elimination Chamber Match" },
+            { year: 2014, type: "PPV", date: "2014-04-06", event: "WrestleMania XXX", opponent: "Bray Wyatt" },
+            { year: 2014, type: "PPV", date: "2014-05-04", event: "Extreme Rules", opponent: "Bray Wyatt (Steel Cage Match)" },
+            { year: 2014, type: "PPV", date: "2014-06-01", event: "Payback", opponent: "Bray Wyatt (Last Man Standing Match)" },
+            { year: 2014, type: "PPV", date: "2014-06-29", event: "Money in the Bank", opponent: "Money in the Bank Ladder Match for WWE Title" },
+            { year: 2014, type: "PPV", date: "2014-07-20", event: "Battleground", opponent: "Randy Orton, Kane & Roman Reigns" },
+            { year: 2014, type: "PPV", date: "2014-08-17", event: "SummerSlam", opponent: "Brock Lesnar" },
+            { year: 2014, type: "PPV", date: "2014-09-21", event: "Night of Champions", opponent: "Brock Lesnar" },
+            { year: 2014, type: "PPV", date: "2014-10-26", event: "Hell in a Cell", opponent: "Randy Orton (Hell in a Cell Match)" },
+            { year: 2014, type: "PPV", date: "2014-11-23", event: "Survivor Series", opponent: "Team Cena vs. Team Authority" },
+            { year: 2014, type: "PPV", date: "2014-12-14", event: "TLC: Tables, Ladders & Chairs", opponent: "Seth Rollins (Tables Match)" },
+            { year: 2015, type: "PPV", date: "2015-01-25", event: "Royal Rumble", opponent: "Brock Lesnar & Seth Rollins" },
+            { year: 2015, type: "PPV", date: "2015-02-22", event: "Fastlane", opponent: "Rusev" },
+            { year: 2015, type: "PPV", date: "2015-03-29", event: "WrestleMania 31", opponent: "Rusev" },
+            { year: 2015, type: "PPV", date: "2015-04-26", event: "Extreme Rules", opponent: "Rusev (Russian Chain Match)" },
+            { year: 2015, type: "PPV", date: "2015-05-17", event: "Payback", opponent: "Rusev ('I Quit' Match)" },
+            { year: 2015, type: "PPV", date: "2015-05-31", event: "Elimination Chamber", opponent: "Kevin Owens" },
+            { year: 2015, type: "PPV", date: "2015-06-14", event: "Money in the Bank", opponent: "Kevin Owens" },
+            { year: 2015, type: "PPV", date: "2015-07-19", event: "Battleground", opponent: "Kevin Owens" },
+            { year: 2015, type: "PPV", date: "2015-08-23", event: "SummerSlam", opponent: "Seth Rollins" },
+            { year: 2015, type: "PPV", date: "2015-09-20", event: "Night of Champions", opponent: "Seth Rollins" },
+            { year: 2015, type: "PPV", date: "2015-10-03", event: "Live from MSG", opponent: "Seth Rollins (Steel Cage Match)" },
+            { year: 2015, type: "PPV", date: "2015-10-25", event: "Hell in a Cell", opponent: "Alberto Del Rio" },
+            { year: 2016, type: "PPV", date: "2016-06-19", event: "Money in the Bank", opponent: "AJ Styles" },
+            { year: 2016, type: "PPV", date: "2016-07-24", event: "Battleground", opponent: "Teamed with Enzo Amore & Big Cass vs. The Club" },
+            { year: 2016, type: "PPV", date: "2016-08-21", event: "SummerSlam", opponent: "AJ Styles" },
+            { year: 2016, type: "PPV", date: "2016-10-09", event: "No Mercy", opponent: "AJ Styles & Dean Ambrose" },
+            { year: 2016, type: "PPV", date: "2016-11-20", event: "Survivor Series", opponent: "Team SmackDown vs. Team Raw" },
+            { year: 2017, type: "PPV", date: "2017-01-29", event: "Royal Rumble", opponent: "AJ Styles" },
+            { year: 2017, type: "PPV", date: "2017-02-12", event: "Elimination Chamber", opponent: "Elimination Chamber Match" },
+            { year: 2017, type: "PPV", date: "2017-04-02", event: "WrestleMania 33", opponent: "Teamed with Nikki Bella vs. The Miz & Maryse" },
+            { year: 2017, type: "PPV", date: "2017-07-23", event: "Battleground", opponent: "Rusev (Flag Match)" },
+            { year: 2017, type: "PPV", date: "2017-08-20", event: "SummerSlam", opponent: "Baron Corbin" },
+            { year: 2017, type: "PPV", date: "2017-09-24", event: "No Mercy", opponent: "Roman Reigns" },
+            { year: 2017, type: "PPV", date: "2017-11-19", event: "Survivor Series", opponent: "Team SmackDown vs. Team Raw" },
+            { year: 2018, type: "PPV", date: "2018-01-28", event: "Royal Rumble", opponent: "Participated in Royal Rumble Match" },
+            { year: 2018, type: "PPV", date: "2018-02-25", event: "Elimination Chamber", opponent: "Competed in Elimination Chamber Match" },
+            { year: 2018, type: "PPV", date: "2018-03-11", event: "Fastlane", opponent: "Competed in Six-Pack Challenge for WWE Championship" },
+            { year: 2018, type: "PPV", date: "2018-04-08", event: "WrestleMania 34", opponent: "The Undertaker" },
+            { year: 2018, type: "PPV", date: "2018-04-27", event: "Greatest Royal Rumble", opponent: "Triple H" },
+            { year: 2018, type: "PPV", date: "2018-10-06", event: "Super Show-Down", opponent: "Teamed with Bobby Lashley vs. Kevin Owens & Elias" },
+            { year: 2019, type: "Raw", date: "2019-01-07", event: "Raw", opponent: "Teamed with Seth Rollins & Finn Bálor vs. Dean Ambrose, Drew McIntyre & Bobby Lashley" },
+            { year: 2019, type: "Raw", date: "2019-01-14", event: "Raw", opponent: "Finn Bálor vs. Drew McIntyre vs. Baron Corbin" },
+            { year: 2020, type: "PPV", date: "2020-04-05", event: "WrestleMania 36", opponent: "'The Fiend' Bray Wyatt (Firefly Fun House match)" },
+            { year: 2021, type: "Raw", date: "2021-07-19", event: "Raw", opponent: "Teamed with Riddle vs. Mace & T-Bar" },
+            { year: 2021, type: "SmackDown", date: "2021-07-23", event: "SmackDown", opponent: "Teamed with The Mysterios vs. The Bloodline" },
+            { year: 2021, type: "PPV", date: "2021-08-21", event: "SummerSlam", opponent: "Roman Reigns" },
+            { year: 2022, type: "SmackDown", date: "2022-12-30", event: "SmackDown", opponent: "Teamed with Kevin Owens vs. Roman Reigns & Sami Zayn" },
+            { year: 2023, type: "PPV", date: "2023-04-01", event: "WrestleMania 39", opponent: "Austin Theory" },
+            { year: 2023, type: "SmackDown", date: "2023-09-15", event: "SmackDown", opponent: "Teamed with AJ Styles vs. The Bloodline (Solo Sikoa & Jimmy Uso)" },
+            { year: 2023, type: "PPV", date: "2023-10-07", event: "Fastlane", opponent: "Teamed with LA Knight vs. The Bloodline (Solo Sikoa & Jimmy Uso)" },
+            { year: 2023, type: "SmackDown", date: "2023-10-27", event: "SmackDown", opponent: "Solo Sikoa" },
+            { year: 2023, type: "PPV", date: "2023-11-04", event: "Crown Jewel", opponent: "Solo Sikoa" },
+        ];
+
+        const setup = () => {
+            const yearFilter = document.getElementById('year-filter');
+            const typeFilter = document.getElementById('type-filter');
+            const resetBtn = document.getElementById('reset-filters');
+
+            // Populate year dropdown
+            const years = [...new Set(allMatches.map(match => match.year))].sort((a, b) => b - a);
+            years.forEach(year => {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearFilter.appendChild(option);
+            });
+
+            // Event listeners
+            yearFilter.addEventListener('change', updateDisplay);
+            typeFilter.addEventListener('change', updateDisplay);
+            resetBtn.addEventListener('click', () => {
+                yearFilter.value = 'all';
+                typeFilter.value = 'all';
+                updateDisplay();
+            });
+
+            updateDisplay();
+        };
+
+        const updateDisplay = () => {
+            const selectedYear = document.getElementById('year-filter').value;
+            const selectedType = document.getElementById('type-filter').value;
+            const checklistContainer = document.getElementById('checklist-container');
+            const matchCountEl = document.getElementById('match-count');
+
+            // Filter matches
+            const filteredMatches = allMatches.filter(match => {
+                const yearMatch = selectedYear === 'all' || match.year == selectedYear;
+                const typeMatch = selectedType === 'all' || match.type === selectedType;
+                return yearMatch && typeMatch;
+            });
+
+            matchCountEl.textContent = filteredMatches.length;
+            checklistContainer.innerHTML = '';
+
+            if (filteredMatches.length === 0) {
+                checklistContainer.innerHTML = '<div class="no-matches">No matches found for the selected filters.</div>';
+            } else {
+                filteredMatches.forEach(match => {
+                    const div = document.createElement('div');
+                    div.className = 'match-item fade-in';
+                    
+                    let typeClass = 'match-type-ppv';
+                    if (match.type === 'Raw') typeClass = 'match-type-raw';
+                    if (match.type === 'SmackDown') typeClass = 'match-type-smackdown';
+
+                    const youtubeQuery = encodeURIComponent(`WWE ${match.event} ${match.year} John Cena vs ${match.opponent} full match`);
+                    const youtubeUrl = `https://www.youtube.com/results?search_query=${youtubeQuery}`;
+                    
+                    div.innerHTML = `
+                        <div class="match-header">
+                            <div>
+                                <div class="match-event">${match.event}</div>
+                                <div class="match-date">${match.date}</div>
+                            </div>
+                            <span class="match-type ${typeClass}">${match.type}</span>
+                        </div>
+                        <div class="match-opponent"><strong>vs.</strong> ${match.opponent}</div>
+                        <div class="video-links">
+                            <a href="${youtubeUrl}" target="_blank" class="video-link">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M10,15l6-3.5L10,8V15z M21.8,8.1c-0.2-0.8-0.8-1.4-1.6-1.6C18.6,6,12,6,12,6s-6.6,0-8.2,0.5C3,6.7,2.4,7.3,2.2,8.1 C1.7,9.7,1.7,12,1.7,12s0,2.3,0.5,3.9c0.2,0.8,0.8,1.4,1.6,1.6C5.4,18,12,18,12,18s6.6,0,8.2-0.5c0.8-0.2,1.4-0.8,1.6-1.6 c0.5-1.6,0.5-3.9,0.5-3.9S22.3,9.7,21.8,8.1z"/>
+                                </svg>
+                                Search YouTube
+                            </a>
+                        </div>
+                    `;
+                    checklistContainer.appendChild(div);
+                });
+            }
+            
+            updateStats();
+            updateCharts();
+        };
+
+        const updateStats = () => {
+            const selectedYear = document.getElementById('year-filter').value;
+            const selectedType = document.getElementById('type-filter').value;
+            
+            // Filter for current selection
+            const filteredMatches = allMatches.filter(match => {
+                const yearMatch = selectedYear === 'all' || match.year == selectedYear;
+                const typeMatch = selectedType === 'all' || match.type === selectedType;
+                return yearMatch && typeMatch;
+            });
+            
+            const ppvMatches = filteredMatches.filter(m => m.type === 'PPV').length;
+            const years = [...new Set(filteredMatches.map(m => m.year))].length;
+            
+            document.getElementById('total-matches').textContent = filteredMatches.length;
+            document.getElementById('ppv-count').textContent = ppvMatches;
+            document.getElementById('years-active').textContent = years;
+        };
+
+        const updateCharts = () => {
+            const selectedYear = document.getElementById('year-filter').value;
+            const selectedType = document.getElementById('type-filter').value;
+            
+            updateTypeChart(selectedYear);
+            updateYearChart(selectedType);
+        };
+
+        const updateTypeChart = (selectedYear) => {
+            const container = document.getElementById('type-chart');
+            const data = selectedYear === 'all' ? allMatches : allMatches.filter(m => m.year == selectedYear);
+            
+            const typeCounts = { PPV: 0, Raw: 0, SmackDown: 0 };
+            data.forEach(match => {
+                if (typeCounts[match.type] !== undefined) {
+                    typeCounts[match.type]++;
+                }
+            });
+            
+            const total = Object.values(typeCounts).reduce((a, b) => a + b, 0);
+            
+            container.innerHTML = '';
+            Object.entries(typeCounts).forEach(([type, count]) => {
+                const percentage = total > 0 ? (count / total * 100).toFixed(1) : 0;
+                const width = total > 0 ? (count / total * 100) : 0;
+                
+                const item = document.createElement('div');
+                item.innerHTML = `
+                    <div class="chart-label">${type} (${count} matches - ${percentage}%)</div>
+                    <div class="chart-bar" style="width: ${width}%">
+                        <div class="chart-value">${count}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        };
+
+        const updateYearChart = (selectedType) => {
+            const container = document.getElementById('year-chart');
+            const data = selectedType === 'all' ? allMatches : allMatches.filter(m => m.type === selectedType);
+            
+            const yearCounts = {};
+            data.forEach(match => {
+                yearCounts[match.year] = (yearCounts[match.year] || 0) + 1;
+            });
+            
+            const sortedYears = Object.keys(yearCounts).sort((a, b) => a - b);
+            const maxCount = Math.max(...Object.values(yearCounts));
+            
+            container.innerHTML = '';
+            sortedYears.forEach(year => {
+                const count = yearCounts[year];
+                const width = maxCount > 0 ? (count / maxCount * 100) : 0;
+                
+                const item = document.createElement('div');
+                item.innerHTML = `
+                    <div class="chart-label">${year} (${count} matches)</div>
+                    <div class="chart-bar" style="width: ${width}%">
+                        <div class="chart-value">${count}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', setup);
+    </script>
+</body>
+</html>
